@@ -1,0 +1,18 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "MyBPActor.generated.h"
+
+UCLASS()
+class YOURPROJECTNAME_API AMyBPActor : public AActor
+{
+    GENERATED_BODY()
+
+public:
+    AMyBPActor();
+
+    // 该函数可以在蓝图中调用
+    UFUNCTION(BlueprintCallable, Category = "MyFunctions")
+    void CustomFunction();
+};
