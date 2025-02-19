@@ -1,0 +1,18 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class LambdaStreamExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(3, 5, 8, 10, 15, 20, 25);
+        
+        // 过滤出偶数并平方后排序
+        List<Integer> processed = numbers.stream()
+            .filter(n -> n % 2 == 0)
+            .map(n -> n * n)
+            .sorted()
+            .collect(Collectors.toList());
+        
+        System.out.println("处理后的数字: " + processed);
+    }
+}
