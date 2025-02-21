@@ -1,0 +1,44 @@
+#include <iostream>
+#include <cstddef>
+
+template <typename T>
+class SharedPtr {
+private:
+    T* ptr;
+    size_t* ref_count;
+public:
+    explicit SharedPtr(T* p = nullptr) : ptr(p), ref_count(new size_t(1)) {}
+    SharedPtr(const SharedPtr<T>& sp) : ptr(sp.ptr), ref_count(sp.ref_count) {
+        (*ref_count)++;
+    }
+    SharedPtr<T>& operator=(const SharedPtr<T>& sp) {
+        if (this != &sp) {
+            if (--(*ref_count) == 0) {
+                delete ptr;
+                delete ref_count;
+            }
+            ptr = sp.ptr;
+            ref_count = sp.ref_count;
+            (*ref_count)++;
+        }
+        return *this;
+    }
+    ~SharedPtr() {
+        if (--(*ref_count) == 0) {
+            delete ptr;
+            delete ref_count;
+        }
+    }
+    T& operator*() { return *ptr; }
+    T* operator->() { return ptr; }
+};
+
+int main() {
+    SharedPtr<int> sp1(new int(42));
+    {
+        SharedPtr<int> sp2 = sp1;
+        std::cout << *sp2 << std::endl;
+    }
+    std::cout << *sp1 << std::endl;
+    return 0;
+}
