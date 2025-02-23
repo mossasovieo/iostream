@@ -1,0 +1,5 @@
+const compiledContract = require('./build/contracts/YourContract.json');
+const contract = new web3.eth.Contract(compiledContract.abi);
+contract.deploy({ data: compiledContract.bytecode })
+    .send({ from: '0xYourAddress', gas: 1500000 })
+    .then(newContractInstance => console.log('Contract deployed at:', newContractInstance.options.address));
