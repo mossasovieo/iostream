@@ -1,0 +1,53 @@
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+class Producer implements Runnable {
+    private BlockingQueue<Integer> queue;
+    public Producer(BlockingQueue<Integer> q) {
+        this.queue = q;
+    }
+    public void run() {
+        try {
+            for (int i = 1; i <= 10; i++) {
+                System.out.println("Producing " + i);
+                queue.put(i);
+                Thread.sleep(500);
+            }
+            queue.put(-1); // 发送终止信号
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+class Consumer implements Runnable {
+    private BlockingQueue<Integer> queue;
+    public Consumer(BlockingQueue<Integer> q) {
+        this.queue = q;
+    }
+    public void run() {
+        try {
+            while (true) {
+                int num = queue.take();
+                if (num == -1) {
+                    queue.put(-1); // 传递终止信号给其它消费者
+                    break;
+                }
+                System.out.println("Consuming " + num);
+                Thread.sleep(300);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+public class ProducerConsumerExample {
+    public static void main(String[] args) {
+        BlockingQueue<Integer> queue = new LinkedBlockingQueue<>();
+        Thread producer = new Thread(new Producer(queue));
+        Thread consumer = new Thread(new Consumer(queue));
+        producer.start();
+        consumer.start();
+    }
+}
