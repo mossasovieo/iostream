@@ -1,0 +1,67 @@
+import java.util.ArrayList;
+import java.util.List;
+
+// Subject 接口
+interface Subject {
+    void registerObserver(Observer o);
+    void removeObserver(Observer o);
+    void notifyObservers();
+}
+
+// Observer 接口
+interface Observer {
+    void update(String message);
+}
+
+// 具体的 Subject
+class NewsAgency implements Subject {
+    private List<Observer> observers = new ArrayList<>();
+    private String news;
+
+    public void setNews(String news) {
+        this.news = news;
+        notifyObservers();
+    }
+
+    @Override
+    public void registerObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(news);
+        }
+    }
+}
+
+// 具体的 Observer
+class NewsChannel implements Observer {
+    private String news;
+
+    @Override
+    public void update(String message) {
+        this.news = message;
+        System.out.println("NewsChannel received: " + news);
+    }
+}
+
+// 主类测试
+public class ObserverPatternDemo {
+    public static void main(String[] args) {
+        NewsAgency agency = new NewsAgency();
+        NewsChannel channel1 = new NewsChannel();
+        NewsChannel channel2 = new NewsChannel();
+
+        agency.registerObserver(channel1);
+        agency.registerObserver(channel2);
+
+        agency.setNews("Breaking News: New Observer Pattern Implemented!");
+    }
+}
