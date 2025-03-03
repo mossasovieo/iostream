@@ -1,0 +1,51 @@
+#include <iostream>
+
+template<typename T>
+struct Node {
+    T data;
+    Node* next;
+    Node(const T& value) : data(value), next(nullptr) {}
+};
+
+template<typename T>
+class LinkedList {
+private:
+    Node<T>* head;
+public:
+    LinkedList() : head(nullptr) {}
+    ~LinkedList() {
+        Node<T>* current = head;
+        while (current) {
+            Node<T>* next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+    void append(const T& value) {
+        Node<T>* newNode = new Node<T>(value);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node<T>* temp = head;
+            while (temp->next) temp = temp->next;
+            temp->next = newNode;
+        }
+    }
+    void display() const {
+        Node<T>* temp = head;
+        while (temp) {
+            std::cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        std::cout << "NULL" << std::endl;
+    }
+};
+
+int main() {
+    LinkedList<int> list;
+    list.append(1);
+    list.append(2);
+    list.append(3);
+    list.display();
+    return 0;
+}
