@@ -1,0 +1,16 @@
+from functools import reduce
+
+# 使用map、filter和reduce进行函数式编程
+numbers = [1, 2, 3, 4, 5]
+
+# 将每个元素平方
+squared = list(map(lambda x: x ** 2, numbers))
+print(squared)  # 输出: [1, 4, 9, 16, 25]
+
+# 过滤出偶数
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+print(evens)  # 输出: [2, 4]
+
+# 计算所有元素的累积和
+sum_all = reduce(lambda x, y: x + y, numbers)
+print(sum_all)  # 输出: 15
