@@ -1,0 +1,28 @@
+def log_call(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__} with args {args} kwargs {kwargs}")
+        result = func(*args, **kwargs)
+        print(f"{func.__name__} returned {result}")
+        return result
+    return wrapper
+
+class AutoReprMeta(type):
+    def __new__(cls, name, bases, dct):
+        def __repr__(self):
+            attrs = ", ".join(f"{k}={v}" for k, v in self.__dict__.items())
+            return f"{name}({attrs})"
+        dct['__repr__'] = __repr__
+        return super().__new__(cls, name, bases, dct)
+
+class MyClass(metaclass=AutoReprMeta):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    @log_call
+    def add(self):
+        return self.x + self.y
+
+obj = MyClass(3, 4)
+print(obj)
+print(obj.add())
