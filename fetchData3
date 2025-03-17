@@ -1,0 +1,21 @@
+async function fetchData(url) {
+  try {
+    let response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('网络响应错误');
+    }
+    let data = await response.json();
+    console.log('数据:', data);
+  } catch (error) {
+    console.error('请求错误:', error);
+  }
+}
+
+(async () => {
+  const urls = [
+    'https://api.example.com/data1',
+    'https://api.example.com/data2'
+  ];
+  const promises = urls.map(url => fetchData(url));
+  await Promise.all(promises);
+})();
