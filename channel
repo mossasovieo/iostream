@@ -1,0 +1,16 @@
+use tokio::sync::mpsc;
+use tokio::task;
+
+#[tokio::main]
+async fn main() {
+    let (tx, mut rx) = mpsc::channel(32);
+
+    let handle = task::spawn(async move {
+        while let Some(msg) = rx.recv().await {
+            println!("Received: {}", msg);
+        }
+    });
+
+    tx.send("Hello, Actor!").await.unwrap();
+    handle.await.unwrap();
+}
