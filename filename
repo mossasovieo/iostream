@@ -1,0 +1,29 @@
+#include <iostream>
+#include <fstream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+std::mutex mtx;
+
+void processFile(const std::string& filename) {
+    std::ifstream file(filename);
+    std::string line;
+    while (getline(file, line)) {
+        std::lock_guard<std::mutex> lock(mtx);
+        std::cout << "Processing: " << line << std::endl;
+    }
+}
+
+int main() {
+    std::vector<std::string> files = {"a.txt", "b.txt", "c.txt"};
+    std::vector<std::thread> threads;
+
+    for (const auto& file : files) {
+        threads.emplace_back(processFile, file);
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+}
