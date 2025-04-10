@@ -1,0 +1,32 @@
+use tokio::{fs::File, io::AsyncWriteExt};
+use reqwest;
+use futures::stream::{FuturesUnordered, StreamExt};
+
+async fn download(url: &str, filename: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let mut resp = reqwest::get(url).await?;
+    let mut out = File::create(filename).await?;
+    while let Some(chunk) = resp.chunk().await? {
+        out.write_all(&chunk).await?;
+    }
+    Ok(())
+}
+
+#[tokio::main]
+async fn main() {
+    let urls = vec![
+        ("https://example.com/a.jpg", "a.jpg"),
+        ("https://example.com/b.jpg", "b.jpg"),
+    ];
+
+    let mut tasks = FuturesUnordered::new();
+    for (url, filename) in urls {
+        tasks.push(download(url, filename));
+    }
+
+    while let Some(res) = tasks.next().await {
+        match res {
+            Ok(_) => println!("Downloaded!"),
+            Err(e) => println!("Error: {}", e),
+        }
+    }
+}
